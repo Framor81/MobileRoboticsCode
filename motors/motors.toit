@@ -88,6 +88,12 @@ class Motors:
     left-motor.set-speed speed
     right-motor.set-speed speed
 
+  set-left-speed speed/float: 
+    left-motor.set-speed speed
+
+  set-right-speed speed/float:
+    right-motor.set-speed speed
+
   stop:
     left-motor.stop
     right-motor.stop
