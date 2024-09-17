@@ -34,3 +34,8 @@ class LedBlinker implements Communicator:
 main:
   led-blinker := LedBlinker
   comm := WsCommunication led-blinker --heartbeat-ms=1000
+
+  while true: 
+    led-blinker.enable 
+    sleep --ms=250
+    led-blinker.disable
