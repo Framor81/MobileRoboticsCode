@@ -1,15 +1,18 @@
 import ..communication
 import ..led
 import ..display
+import ..motors
 
-class LedBlinker implements Communicator:
-
-  led := Led
+class IPDisplay implements Communicator:
   state := Communicator.DISABLED
-  display := Display
+
+  led/Led := Led
+  display/Display := Display --inverted=true
+  motors/Motors := Motors
     
   constructor:
     led.off
+    motors.stop
 
   on-start address port: 
     display.add-text "$address"
@@ -31,16 +34,18 @@ class LedBlinker implements Communicator:
     print "Enabling"
     state = Communicator.ENABLED
     led.on
+    motors.set-speed-forward 0.25
 
   disable:
     if state == Communicator.DISABLED: return
     print "Disabling"
     state = Communicator.DISABLED
     led.off
+    motors.stop
 
 main:
-  led-blinker := LedBlinker
-  comm := WsCommunication led-blinker --heartbeat-ms=1000
+  ip-display := IPDisplay
+  comm := WsCommunication ip-display --heartbeat-ms=1000
 
 
  
