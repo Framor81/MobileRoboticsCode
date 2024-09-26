@@ -50,8 +50,6 @@ class ProportionalControl:
     speed-factor = constrain (speed-factor + u) -1.0 1.0
     
     print ("speed factor = $speed-factor")
-    print ("error = $error")
-    print ("u = $u")
     return speed-factor
 
 class MotorControl:
@@ -113,9 +111,9 @@ main:
     sleep --ms=1000
 
   motor-control := MotorControl heartbeat-handler.motors
-  motor-speed := 0.20
+  motor-speed := 0.0
 
-  duration-ms := 10_000
+  duration-ms := 20_000
   control-update-ms := 100
 
   time-ms := 0
@@ -126,6 +124,7 @@ main:
     sleep --ms=control-update-ms
 
     time-ms += control-update-ms
+    motor-speed = motor-speed + 0.1
     
 
   heartbeat-handler.motors.stop
