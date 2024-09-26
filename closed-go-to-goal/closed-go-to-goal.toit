@@ -48,7 +48,10 @@ class ProportionalControl:
     error := desired-speed - measured-speed
     u := constrain (kp * error) -max-speed-step max-speed-step
     speed-factor = constrain (speed-factor + u) -1.0 1.0
-
+    
+    print ("speed factor = $speed-factor")
+    print ("error = $error")
+    print ("u = $u")
     return speed-factor
 
 class MotorControl:
@@ -65,8 +68,8 @@ class MotorControl:
   left-controller/ProportionalControl := ProportionalControl LEFT-KP MAX-SPEED-STEP MAX-SPEED
   right-controller/ProportionalControl := ProportionalControl RIGHT-KP MAX-SPEED-STEP MAX-SPEED
 
-  left-time/int
-  right-time/int
+  left-time/int := 0
+  right-time/int := 0
   
   constructor .motors:
     left-time = Time.monotonic-us
@@ -80,8 +83,10 @@ class MotorControl:
 
     now := Time.monotonic-us
     time-delta := (now - left-time).to-float / 1_000_000
+    left-time = now
     left-rot-per-s := motors.left-encoder.get-rotation-rate time-delta
     left-speed := left-rot-per-s * WHEEL-CIRCUMFERENCE 
+    print "LEFT"
     left-speed-factor := left-controller.compute-speed-factor desired-speed left-speed
     motors.left-motor.set-speed-factor left-speed-factor
    
@@ -89,8 +94,10 @@ class MotorControl:
   update-right-speed desired-speed/float:
     now := Time.monotonic-us
     time-delta := (now - right-time).to-float / 1_000_000
+    right-time = now
     right-rot-per-s := motors.right-encoder.get-rotation-rate time-delta
     right-speed := right-rot-per-s * WHEEL-CIRCUMFERENCE 
+    print "RIGHT"
     right-speed-factor := right-controller.compute-speed-factor desired-speed right-speed
     motors.right-motor.set-speed-factor right-speed-factor
     
@@ -119,6 +126,7 @@ main:
     sleep --ms=control-update-ms
 
     time-ms += control-update-ms
+    
 
   heartbeat-handler.motors.stop
   print "DONE"

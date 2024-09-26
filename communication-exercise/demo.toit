@@ -1,4 +1,4 @@
-import ..communication
+import ..communication.src.communication
 import ..led
 
 class LedBlinker implements Communicator:
@@ -23,19 +23,23 @@ class LedBlinker implements Communicator:
     if state == Communicator.ENABLED: return
     print "Enabling"
     state = Communicator.ENABLED
-    led.on
+    // led.on
 
   disable:
     if state == Communicator.DISABLED: return
     print "Disabling"
     state = Communicator.DISABLED
-    led.off
+    // led.off
 
 main:
   led-blinker := LedBlinker
   comm := WsCommunication led-blinker --heartbeat-ms=1000
 
-  while true: 
-    led-blinker.enable 
-    sleep --ms=250
-    led-blinker.disable
+  while true:
+    if led-blinker.is-enabled:
+      led-blinker.led.on 
+      sleep --ms=250
+      led-blinker.led.off
+      sleep --ms=250
+    else:
+      sleep --ms=1000
