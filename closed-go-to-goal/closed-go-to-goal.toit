@@ -50,6 +50,8 @@ class ProportionalControl:
     speed-factor = constrain (speed-factor + u) -1.0 1.0
     
     print ("speed factor = $speed-factor")
+    print ("error = $error")
+    print ("u = $u")
     return speed-factor
 
 class MotorControl:
@@ -105,27 +107,25 @@ class MotorControl:
 
 main:
   heartbeat-handler := HeartbeatHandler
-  comm := WsCommunication heartbeat-handler --heartbeat-ms=1000
+  comm := WsCommunication heartbeat-handler --heartbeat-ms=10000
   
   while not heartbeat-handler.is-enabled:
     sleep --ms=1000
 
   motor-control := MotorControl heartbeat-handler.motors
-  motor-speed := 0.0
+  // motor-speed := 0.20
 
-  duration-ms := 20_000
-  control-update-ms := 100
+  // duration-ms := 10_000
+  // control-update-ms := 100
 
-  time-ms := 0
-
-  while time-ms < duration-ms:
-
-    motor-control.update-forward-speed motor-speed
-    sleep --ms=control-update-ms
-
-    time-ms += control-update-ms
-    motor-speed = motor-speed + 0.1
+  // time-ms := 0
+  
+  motor-control.motors.left-motor.set-pwm-duty-factor 0.8
+  motor-control.motors.right-motor.set-pwm-duty-factor 1.0
     
+  sleep --ms=10000 
 
+  motor-control.motors.left-motor.stop
+  motor-control.motors.right-motor.stop
   heartbeat-handler.motors.stop
   print "DONE"
