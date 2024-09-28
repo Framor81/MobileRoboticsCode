@@ -113,9 +113,9 @@ main:
     sleep --ms=1000
 
   motor-control := MotorControl heartbeat-handler.motors
-  motor-speed := 0.20
+  motor-speed := 0.75
 
-  duration-ms := 10_000
+  duration-ms := 8_000
   control-update-ms := 100
 
   time-ms := 0
@@ -134,4 +134,8 @@ main:
     time-ms += control-update-ms
 
   heartbeat-handler.motors.stop
+
+  while true:
+    sleep --ms=1000
+
   print "DONE"
