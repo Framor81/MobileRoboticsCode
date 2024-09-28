@@ -113,25 +113,26 @@ main:
     sleep --ms=1000
 
   motor-control := MotorControl heartbeat-handler.motors
-  motor-speed := 0.75
+  // motor-speed := 0.75
 
-  duration-ms := 8_000
-  control-update-ms := 100
+  // duration-ms := 8_000
+  // control-update-ms := 100
 
-  time-ms := 0
+  // time-ms := 0
   
   // FIND MAX SPEED
-  // motor-control.motors.left-motor.set-pwm-duty-factor 0.8
-  // motor-control.motors.right-motor.set-pwm-duty-factor 1.0
-  // motor-control.motors.left-motor.stop
-  // motor-control.motors.right-motor.stop
-    
-  // sleep --ms=10000 
+  motor-control.motors.left-motor.set-pwm-duty-factor 0.8
+  motor-control.motors.right-motor.set-pwm-duty-factor 1.0
 
-  while time-ms < duration-ms:
-    motor-control.update-forward-speed motor-speed
-    sleep --ms=control-update-ms
-    time-ms += control-update-ms
+    
+  sleep --ms=7000 
+
+  motor-control.motors.left-motor.stop
+  motor-control.motors.right-motor.stop
+  // while time-ms < duration-ms:
+  //   motor-control.update-forward-speed motor-speed
+  //   sleep --ms=control-update-ms
+  //   time-ms += control-update-ms
 
   heartbeat-handler.motors.stop
 
