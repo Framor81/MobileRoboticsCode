@@ -128,7 +128,7 @@ main:
   sleep --ms=7000 
 
   motor-control.motors.left-motor.stop
-  motor-control.motors.right-motor.stop
+  motor-control.motors.right-motor.stop 
   // while time-ms < duration-ms:
   //   motor-control.update-forward-speed motor-speed
   //   sleep --ms=control-update-ms
