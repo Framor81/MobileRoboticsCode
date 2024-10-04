@@ -1,4 +1,5 @@
 #include "display.h"
+#include "../../include/wscommunicator.h"
 
 // Global State
 
@@ -26,12 +27,7 @@ void setup() {
 //
 
 void loop() {
-    auto wrappedCB = [this](uint8_t num, WStype_t type, uint8_t* payload, size_t length) {
-      wsEventCB(*this, num, type, payload, length);
-    };
-    webSocket.begin();
-    webSocket.onEvent(wrappedCB);
     // Serial.printf("[COMMUNICATOR::SETUP] WebSocket server at ws://%d.%d.%d.%d:%d\n", ip[0], ip[1], ip[2], ip[3], port);
-
-    display.loopStep("%d.%d.%d.%d:%d\n", ip[0], ip[1], ip[2], ip[3], PORT);
+    
+    display.loopStep(wsCommunicator.getIpAddress() + wsCommunicator.getPort());
 }
