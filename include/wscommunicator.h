@@ -85,7 +85,7 @@ class WSCommunicator {
 
   bool isEnabled() { return hbState == HEARTBEAT_ENABLED; }
 
-  const char* getIpAddress() { return WiFi.localIP().toString().c_str(); }
+  String getIpAddress() { return WiFi.localIP().toString(); }
   uint16_t getPort() { return port; }
 };
 

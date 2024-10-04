@@ -18,9 +18,9 @@ class Display{
             u8x8.setFlipMode(1);
         }
 
-        void loopStep(String message) {
+        void loopStep(String message, int x, int y) {
             u8x8.setFont(u8x8_font_chroma48medium8_r);
-            u8x8.setCursor(8, 16);
+            u8x8.setCursor(x, y);
             u8x8.print(message);
         }
 };
