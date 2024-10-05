@@ -37,14 +37,4 @@ void setup() {
 //
 
 void loop() {
-    // Serial.printf("[COMMUNICATOR::SETUP] WebSocket server at ws://%d.%d.%d.%d:%d\n", ip[0], ip[1], ip[2], ip[3], port);
-    // char buffer[22];
-    // snprintf(buffer, 22, "%s:%d", wsCommunicator.getIpAddress(), wsCommunicator.getPort());
-    // display.loopStep(buffer);
-    char port[7];
-    snprintf(port, 6, ":%d", wsCommunicator.getPort());
-    
-
-    // display.loopStep(wsCommunicator.getIpAddress(), 0, 16);
-    // display.loopStep(port, 0, 32);
 }
