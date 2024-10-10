@@ -20,16 +20,7 @@ Display display;
 void setup() {
     Serial.begin(115200);
     wsCommunicator.setup();
-    display.setup();
-
-    u8x8.setFont(u8x8_font_chroma48medium8_r);
-    u8x8.drawString(0, 0, wsCommunicator.getIpAddress().c_str());
-
-    char port[7];
-    snprintf(port, 6, ":%d", wsCommunicator.getPort());
-    u8x8.drawString(0, 1, port);
-
-  
+    display.setup();  
 }
 
 //
@@ -37,4 +28,14 @@ void setup() {
 //
 
 void loop() {
+
+    // u8x8.setFont(u8x8_font_chroma48medium8_r);
+    // u8x8.drawString(0, 0, wsCommunicator.getIpAddress().c_str());
+
+    char port[7];
+    snprintf(port, 6, ":%d", wsCommunicator.getPort());
+    // u8x8.drawString(0, 1, port);
+    
+    display.loopstep(0, 0, wsCommunicator.getIpAddress().c_str());
+    display.loopstep(0, 1, port);
 }
