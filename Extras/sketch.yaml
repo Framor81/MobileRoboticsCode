@@ -1,0 +1,13 @@
+default_fqbn: esp32:esp32:XIAO_ESP32S3
+default_protocol: serial
+default_port: /dev/cu.usbmodem2101
+default_profile: XIAO_ESP32S3
+
+profiles:
+  XIAO_ESP32S3:
+    platforms:
+      - platform: esp32:esp32 (3.0.5)
+    libraries:
+      - U8g2 (2.35.30)
+      - ESP32Encoder (0.11.7)
+      - WebSockets (2.6.1)

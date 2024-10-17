@@ -16,15 +16,15 @@ typedef enum { HEARTBEAT_ENABLED, HEARTBEAT_DISABLED } WsHeartbeatState;
 // Forward declaration of the WebSocket event callback
 //
 
-class WSCommunicator;
-void wsEventCB(WSCommunicator& wsComm, uint8_t num, WStype_t type, uint8_t* payload, size_t length);
+class WsCommunicator;
+void wsEventCB(WsCommunicator& wsComm, uint8_t num, WStype_t type, uint8_t* payload, size_t length);
 
 //
 // WebSocket server configuration, communication, and state
 //
 
-class WSCommunicator {
-  friend void wsEventCB(WSCommunicator& wsComm, uint8_t num, WStype_t type, uint8_t* payload, size_t length);
+class WsCommunicator {
+  friend void wsEventCB(WsCommunicator& wsComm, uint8_t num, WStype_t type, uint8_t* payload, size_t length);
 
  private:
   IntervalTimer heartbeatTimer;
@@ -35,7 +35,7 @@ class WSCommunicator {
   WsHeartbeatState hbState;
 
  public:
-  WSCommunicator(const char* ssid, uint16_t port, unsigned long interval)
+  WsCommunicator(const char* ssid, uint16_t port, unsigned long interval)
       : heartbeatTimer(interval), ssid(ssid), port(port), webSocket(port), hbState(HEARTBEAT_DISABLED) {}
 
   void setup() {
@@ -93,7 +93,7 @@ class WSCommunicator {
 // WebSocket event callback
 //
 
-void wsEventCB(WSCommunicator& wsComm, uint8_t num, WStype_t type, uint8_t* payload, size_t length) {
+void wsEventCB(WsCommunicator& wsComm, uint8_t num, WStype_t type, uint8_t* payload, size_t length) {
   IPAddress ip;
 
   switch (type) {
@@ -112,6 +112,7 @@ void wsEventCB(WSCommunicator& wsComm, uint8_t num, WStype_t type, uint8_t* payl
       if (strncmp((char*)payload, "heartbeat", length) == 0) {
         wsComm.hbState = HEARTBEAT_ENABLED;
         wsComm.heartbeatTimer.setLastTime(millis());
+        // Serial.printf("[COMMUNICATOR::%u] Heartbeat\n", num);
       } else {
         Serial.printf("[COMMUNICATOR::%u] Received: %s\n", num, payload);
       }
