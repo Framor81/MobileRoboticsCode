@@ -1,7 +1,8 @@
 #include "../../include/wscommunicator.h"
 #include "../../include/motorcontrol.h"
 #include "../display/display.h"
-#include "kinematics.h"
+#include "../Kinematics/kinematics.h"
+#include <iostream>
 
 
 
@@ -9,7 +10,7 @@
 const char* SSID = "Pomona";
 const uint16_t PORT = 8181;
 const unsigned long HEARTBEAT_INTERVAL = 1000;
-WSCommunicator wsCommunicator(SSID, PORT, HEARTBEAT_INTERVAL);
+WsCommunicator wsCommunicator(SSID, PORT, HEARTBEAT_INTERVAL);
 
 // Initialize a MotorControl object
 MotorControl motorControl;
@@ -19,6 +20,8 @@ Display display;
 
 // Initialize a Kinematics object
 Kinematics kinematics;
+unsigned long startTime = 0;
+unsigned long timeRan = 0;
 
 // Setup:
 //     Start serial
@@ -37,8 +40,9 @@ void setup() {
     display.setup();
 
     // START
-    motorControl.setup(6.2, 0.1, 0.1, 0.05, 0.5, 0, 500);
-    motorControl.setTargetVelocity(0.2, 0.25);    
+    motorControl.setup(6.2, 0.1, 0.1, 0.05, 0.5, 0, 250);
+    motorControl.setTargetVelocity(0.2, 0.25);  
+    startTime = millis();
 }
 
 
@@ -48,13 +52,16 @@ void setup() {
 //     Update the kinematics
 //     Output the current pose
 void loop(){
-    
+    timeRan = millis();
+
     wsCommunicator.loopStep();
     display.loopStep();
-    motorControl.loopStep();
 
-    kinematics.loopStep(motorControl.getLeftVelocity(), motorControl.getRightVelocity());
-
-    
-
+    if (timeRan - startTime >= 10000){
+        motorControl.stop();
+    } else {
+        motorControl.loopStep(wsCommunicator.isEnabled());
+        kinematics.loopStep(motorControl.getLeftVelocity(), motorControl.getRightVelocity());
+        Serial.println("xG = " + kinematics.xG + "\nyG = " + kinematics.yG + "\nThetaG =  " + kinematics.thetaG );    
+    }
 }

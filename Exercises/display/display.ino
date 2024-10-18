@@ -7,7 +7,7 @@
 const char* SSID = "Pomona";
 const uint16_t PORT = 8181;
 const unsigned long HEARTBEAT_INTERVAL = 1000;
-WSCommunicator wsCommunicator(SSID, PORT, HEARTBEAT_INTERVAL);
+WsCommunicator wsCommunicator(SSID, PORT, HEARTBEAT_INTERVAL);
 
 
 // Initialize display
@@ -31,6 +31,6 @@ void loop() {
     char port[7];
     snprintf(port, 6, ":%d", wsCommunicator.getPort());
     
-    display.loopstep(0, 0, wsCommunicator.getIpAddress().c_str());
-    display.loopstep(0, 1, port);
+    display.loopStep(0, 0, wsCommunicator.getIpAddress().c_str());
+    display.loopStep(0, 1, port);
 }
