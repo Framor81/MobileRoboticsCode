@@ -15,7 +15,7 @@ class Display{
         u8x8.setFont(u8x8_font_chroma48medium8_r);
       }
 
-      void loopstep(int x, int y, const char* str) {
+      void loopStep(int x, int y, const char* str) {
         u8x8.drawString(x, y, str);
       }
 };

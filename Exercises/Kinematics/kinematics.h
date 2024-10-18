@@ -15,10 +15,9 @@ class Kinematics {
         }
 
         void setup() {
-
         }
 
-        void loopstep(float phiDotL, float phiDotR) {
+        void loopStep(float phiDotL, float phiDotR) {
             // update local reference frame
             xDotR = (phiDotL + phiDotR) * 0.5;
             yDotR = 0;
