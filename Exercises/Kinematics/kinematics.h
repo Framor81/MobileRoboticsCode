@@ -1,5 +1,5 @@
 #include <cmath>
-#include "../include/intervaltimer.h"
+#include "../../include/intervaltimer.h"
 
 #ifndef KINEMATICS_H
 #define KINEMATICS_H

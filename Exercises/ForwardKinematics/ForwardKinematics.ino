@@ -65,8 +65,8 @@ void loop(){
     if (timeRan - startTime >= 10000){
         motorControl.stop();
     } else {
-        motorControl.loopStep(wsCommunicator.isEnabled());
-        kinematics.loopStep(motorControl.getLeftVelocity(), motorControl.getRightVelocity(), );
+        motorControl.loopStep(true);
+        kinematics.loopStep(motorControl.getLeftVelocity(), motorControl.getRightVelocity());
         // Serial.println("xG = " + kinematics.xG + "\nyG = " + kinematics.yG + "\nThetaG =  " + kinematics.thetaG );   
         Serial.printf("%f, %f, %f\n", kinematics.xG, kinematics.yG, kinematics.thetaG); 
     }
