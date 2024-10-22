@@ -24,6 +24,8 @@ Kinematics kinematics(0, 0, 0, 250);
 unsigned long startTime = 0;
 unsigned long timeRan = 0;
 
+IntervalTimer timer;
+
 // Setup:
 //     Start serial
 //     Start the wsCommunicator
