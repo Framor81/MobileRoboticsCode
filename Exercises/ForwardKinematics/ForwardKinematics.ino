@@ -3,6 +3,7 @@
 #include "../display/display.h"
 #include "../Kinematics/kinematics.h"
 #include <iostream>
+#include <math.h>
 
 
 
@@ -13,13 +14,13 @@ const unsigned long HEARTBEAT_INTERVAL = 1000;
 WsCommunicator wsCommunicator(SSID, PORT, HEARTBEAT_INTERVAL);
 
 // Initialize a MotorControl object
-MotorControl motorControl;
+MotorControl motorControl(0.086 * PI, 0.1, 0.1, 0.05, 0.5, 0, 250);
 
 // Initialize a Display object
 Display display;
 
 // Initialize a Kinematics object
-Kinematics kinematics;
+Kinematics kinematics(0, 0, 0, 250);
 unsigned long startTime = 0;
 unsigned long timeRan = 0;
 
@@ -40,7 +41,7 @@ void setup() {
     display.setup();
 
     // START
-    motorControl.setup(6.2, 0.1, 0.1, 0.05, 0.5, 0, 250);
+    motorControl.setup();
     motorControl.setTargetVelocity(0.2, 0.25);  
     startTime = millis();
 }
@@ -55,13 +56,18 @@ void loop(){
     timeRan = millis();
 
     wsCommunicator.loopStep();
-    display.loopStep();
+
+    char port[7];
+    snprintf(port, 6, ":%d", wsCommunicator.getPort());
+    display.loopStep(0, 0, wsCommunicator.getIpAddress().c_str());
+    display.loopStep(0, 1, port);
 
     if (timeRan - startTime >= 10000){
         motorControl.stop();
     } else {
         motorControl.loopStep(wsCommunicator.isEnabled());
-        kinematics.loopStep(motorControl.getLeftVelocity(), motorControl.getRightVelocity());
-        Serial.println("xG = " + kinematics.xG + "\nyG = " + kinematics.yG + "\nThetaG =  " + kinematics.thetaG );    
+        kinematics.loopStep(motorControl.getLeftVelocity(), motorControl.getRightVelocity(), );
+        // Serial.println("xG = " + kinematics.xG + "\nyG = " + kinematics.yG + "\nThetaG =  " + kinematics.thetaG );   
+        Serial.printf("%f, %f, %f\n", kinematics.xG, kinematics.yG, kinematics.thetaG); 
     }
 }
