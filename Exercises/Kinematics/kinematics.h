@@ -21,16 +21,18 @@ class Kinematics {
 
         void loopStep(float phiDotL, float phiDotR) {
             // update local reference frame
-            float deltaT = timer.getLastDelta() / 1000;
+            if (timer) {
+                float deltaT = timer.getLastDelta() / 1000;
 
-            xDotR = (phiDotL + phiDotR) * 0.5;
-            yDotR = 0;
-            thetaDotR = ((phiDotR * R) - (phiDotL * R)) / D;
+                xDotR = (phiDotL + phiDotR) * 0.5;
+                yDotR = 0;
+                thetaDotR = ((phiDotR * R) - (phiDotL * R)) / D;
+                
+                xG += (xDotR * cos(thetaG)- yDotR * sin(thetaG)) * deltaT;
+                yG += (xDotR * sin(thetaG) + yDotR * cos(thetaG)) * deltaT;
             
-            xG += (xDotR * cos(thetaG)- yDotR * sin(thetaG)) * deltaT;
-            yG += (xDotR * sin(thetaG) + yDotR * cos(thetaG)) * deltaT;
-        
-            thetaG += thetaDotR * deltaT;
+                thetaG += thetaDotR * deltaT;
+            }
         }
 };
 
