@@ -22,11 +22,11 @@ class Kinematics {
         void loopStep(float phiDotL, float phiDotR) {
             // update local reference frame
             if (timer) {
-                float deltaT = timer.getLastDelta() / 1000;
+                float deltaT = timer.getLastDelta() / 1000.0;
 
                 xDotR = (phiDotL + phiDotR) * 0.5;
                 yDotR = 0;
-                thetaDotR = ((phiDotR * R) - (phiDotL * R)) / D;
+                thetaDotR = ((phiDotR) - (phiDotL)) / D;
                 
                 xG += (xDotR * cos(thetaG)- yDotR * sin(thetaG)) * deltaT;
                 yG += (xDotR * sin(thetaG) + yDotR * cos(thetaG)) * deltaT;

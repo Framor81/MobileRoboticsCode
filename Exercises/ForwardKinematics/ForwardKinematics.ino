@@ -23,8 +23,7 @@ Display display;
 Kinematics kinematics(0, 0, 0, 250);
 unsigned long startTime = 0;
 unsigned long timeRan = 0;
-
-IntervalTimer timer;
+IntervalTimer timer(100);
 
 // Setup:
 //     Start serial
@@ -64,12 +63,14 @@ void loop(){
     display.loopStep(0, 0, wsCommunicator.getIpAddress().c_str());
     display.loopStep(0, 1, port);
 
-    if (timeRan - startTime >= 10000){
+    if (timeRan - startTime >= 10000) {
         motorControl.stop();
     } else {
         motorControl.loopStep(true);
         kinematics.loopStep(motorControl.getLeftVelocity(), motorControl.getRightVelocity());
-        // Serial.println("xG = " + kinematics.xG + "\nyG = " + kinematics.yG + "\nThetaG =  " + kinematics.thetaG );   
-        Serial.printf("%f, %f, %f\n", kinematics.xG, kinematics.yG, kinematics.thetaG); 
+        // Serial.println("xG = " + kinematics.xG + "\nyG = " + kinematics.yG + "\nThetaG =  " + kinematics.thetaG );
+        if (timer) {  
+          Serial.printf("%f %f %f\n", kinematics.xG, kinematics.yG, kinematics.thetaG); 
+        }
     }
 }
