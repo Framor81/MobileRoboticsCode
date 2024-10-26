@@ -20,11 +20,12 @@ class Pose:
     x = 0
     y = 0
     theta = 0
-    # initialize our Pose 
-    # def __init__(self):
-    #     self.x = 0
-    #     self.y = 0
-    #     self.theta = 0
+
+    def reset(self):
+        self.x = 0
+        self.y = 0
+        self.theta = 0
+
     def get_pose(self): 
         return (self.x, self.y, self.theta)
 
@@ -45,7 +46,6 @@ class ForwardKinematics:
         return pose
 
 
-
 # position control class
 class PositionControl: 
     def __init__(self):
@@ -61,8 +61,8 @@ class PositionControl:
         d = math.dist(pose.get_pose(), goal)
         # if d is small then return 0, 0
         # what do we consider small
-        if (d < 0.5):
-            return (0,0)
+        if (d < 1):
+            return 0, 0
 
         v = K_POSITION * d  
         v = min(v, MAX_LINEAR_VELOCITY)
@@ -85,36 +85,37 @@ class PositionControl:
 
 def plot_graph(position, subplot):
     
-    plot = plt.plot(position.xs, position.ys)
+    subplot.plot(position.xs, position.ys)
+    subplot.plot(GOAL[0], GOAL[1], marker="x", markersize=20)
 
-    plt.xlabel("X Coordinate")
-    plt.ylabel("Y Coordinate")
-    plt.title("Current Goal: "  + str(GOAL))
-    plt.figtext(0, 1, "Max Linear Velocity: " + str(MAX_LINEAR_VELOCITY))
-    plt.figtext(0, 2, "Max Angular Velocity: " + str(MAX_ANGULAR_VELOCITY))
-    plt.figtext(0, 3, "K Position: " + str(K_POSITION))
-    plt.figtext(0, 4, "K Orientation: " + str(K_ORIENTATION))
 
-    
-
-    return plot
+    subplot.set_title("Goal: "  + str(GOAL))
+    subplot.set_xlabel("Max Linear Velocity: " + str(MAX_LINEAR_VELOCITY) + "\n"
+                       + "Max Angular Velocity: " + str(MAX_ANGULAR_VELOCITY) + "\n"
+                       + "K Position: " + str(K_POSITION) + "\n" 
+                       + "K Orientation: " + str(K_ORIENTATION), ha = "center", fontsize = 8)
 
 
 def main():
-    fig, axs = plt.subplots(2, 5)
+    global K_ORIENTATION, K_POSITION, GOAL, MAX_LINEAR_VELOCITY, MAX_ANGULAR_VELOCITY  # Declare global variables
+
+    fig, axs = plt.subplots(2, 5, figsize = (15, 5))
+    fig.tight_layout(h_pad = 5)
+    axs = axs.flatten()
+    plt.subplots_adjust(hspace=1, top=0.9, bottom=0.2, left=0.1, right=0.9)
     
     for i in range(10):
         initial_t = time.time()
         t = time.time()
-        dt = 0.25
+        dt = 0.5
         v_left = 0.2
         v_right = 0.25
         pose = Pose()
         position = PositionControl()
         
         while t < initial_t + TIME_END:
-            pose = ForwardKinematics.forward_kinematics(pose, v_left, v_right, dt)
             print(pose)
+            pose = ForwardKinematics.forward_kinematics(pose, v_left, v_right, dt)
             v_left, v_right = position.position_control(pose, GOAL)
             t = time.time()
 
@@ -127,12 +128,19 @@ def main():
 
         plot_graph(position, axs[i])
         
-        K_ORIENTATION = random.uniform(0, 4)
-        K_POSITION = random.uniform(0, 4)
+        K_ORIENTATION = round(random.uniform(0, 4), 2)
+        K_POSITION = round(random.uniform(0, 4), 2)
 
-        GOAL = (random.uniform(-3, 3), random.uniform(-3, 3), random.uniform(-3, 3))
-        MAX_LINEAR_VELOCITY = random.uniform(0, 2)
-        MAX_ANGULAR_VELOCITY = random.uniform(0, 2)
+        GOAL = (round(random.uniform(-3, 3), 2), 
+                round(random.uniform(-3, 3),2), 
+                round(random.uniform(-2 * math.pi, 2 * math.pi), 2))
+        MAX_LINEAR_VELOCITY = round(random.uniform(0, 2), 2)
+        MAX_ANGULAR_VELOCITY = round(random.uniform(0, 2), 2)
+
+        pose.reset()
+
+    plt.savefig('./motioncontrol.png')
+    plt.show()
 
 
 if __name__ == '__main__':
