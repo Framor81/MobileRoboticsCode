@@ -8,7 +8,7 @@ class Display{
     public:
       U8X8_SSD1306_128X64_NONAME_HW_I2C u8x8;
 
-      void setup(int x, int y, const char* str) {
+      void setup() {
         u8x8 = U8X8_SSD1306_128X64_NONAME_HW_I2C(SCL, SDA, U8X8_PIN_NONE); 
         u8x8.begin();
         u8x8.setFlipMode(1);
