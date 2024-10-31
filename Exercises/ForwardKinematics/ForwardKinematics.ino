@@ -58,7 +58,8 @@ void loop(){
 
     wsCommunicator.loopStep();
 
-    
+    char port[7];
+    snprintf(port, 6, ":%d", wsCommunicator.getPort());
     display.loopStep(0, 0, wsCommunicator.getIpAddress().c_str());
     display.loopStep(0, 1, port);
 

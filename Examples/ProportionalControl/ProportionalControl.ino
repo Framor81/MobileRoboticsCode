@@ -44,4 +44,5 @@ void setup() {
 void loop() {
   wsCommunicator.loopStep();
   motorControl.loopStep(wsCommunicator.isEnabled());
+  Serial.printf("%f %f\n", motorControl.getLeftVelocity(), motorControl.getRightVelocity());
 }
