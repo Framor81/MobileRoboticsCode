@@ -4,6 +4,16 @@
 #include "../../include/motorcontrol.h"
 #include "../display/display.h"
 #include "../../include/forwardkinematics.h"
+#include "positioncontrol.h"
+
+#include <math.h>
+
+
+// Physical characteristics
+const float WHEEL_DIAMETER = 0.086;
+const float WHEEL_CIRCUMFERENCE = WHEEL_DIAMETER * PI;
+const float TRACK_WIDTH = 0.16;
+
 
 // Network Configuration
 const char* SSID = "Pomona";
@@ -16,11 +26,6 @@ WsCommunicator wsCommunicator(SSID, PORT, HEARTBEAT_INTERVAL);
 const unsigned long MESSAGE_INTERVAL = 500;
 IntervalTimer messageTimer(500);
 
-// Physical characteristics
-const float WHEEL_DIAMETER = 0.086;
-const float WHEEL_CIRCUMFERENCE = WHEEL_DIAMETER * PI;
-const float TRACK_WIDTH = 0.16;
-
 // Display Configuration
 Display display;
 
@@ -30,7 +35,7 @@ const float LEFT_GAIN = 0.5;
 const float RIGHT_GAIN = 0.5;
 const float MAX_VELOCITY_STEP = 0.5;
 const float MAX_LINEAR_VELOCITY = 0.4;
-const float MIN_PWM_PERCENT = 0.15;
+const float MIN_PWM_PERCENT = 30;
 const unsigned long MOTOR_CONTROL_INTERVAL = 100;
 
 
@@ -44,7 +49,26 @@ const unsigned long FORWARD_KINEMATICS_INTERVAL = 250;
 
 ForwardKinematics forwardKinematics(TRACK_WIDTH, FORWARD_KINEMATICS_INTERVAL);
 
+// Position control configuration
+const float GOAL_X = 1;
+const float GOAL_Y = 1;
+const float GOAL_THRESHOLD = 0.1;
+
+const float MAX_ANGULAR_VELOCITY = 1.0;
+
+// modify these to our particular robot
+const float K_POSITION = 1.0; 
+const float K_ORIENTATION = 2.0;
+
+const unsigned long POSITION_CONTROL_INTERVAL = 250;
+
+
+PositionControl positionControl(GOAL_X, GOAL_Y, GOAL_THRESHOLD, MAX_LINEAR_VELOCITY, MAX_ANGULAR_VELOCITY, K_POSITION, K_ORIENTATION, TRACK_WIDTH, POSITION_CONTROL_INTERVAL);
+
+
 void setup() { 
+    Serial.begin(115200);
+
     wsCommunicator.setup(); 
     display.setup();
 
@@ -56,9 +80,10 @@ void setup() {
     display.drawString(0, 2, port);
 
     motorControl.setup();
-    motorControl.setTargetVelocity(0.5);
 
     forwardKinematics.setup();
+
+    positionControl.setup();
 }
 
 // Reset
@@ -86,10 +111,17 @@ void loop() {
     float leftVelocity = motorControl.getLeftVelocity();
     float rightVelocity = motorControl.getRightVelocity();
     forwardKinematics.loopStep(leftVelocity, rightVelocity);
-    
-    if (messageTimer) {
-        Pose pose = forwardKinematics.getPose();
 
+    // Update position control
+    Pose pose = forwardKinematics.getPose();
+    bool shouldUpdateVelocities = positionControl.loopStep(pose, leftVelocity, rightVelocity);
+
+    if (shouldUpdateVelocities){
+        motorControl.setTargetVelocity(leftVelocity, rightVelocity);
+    }
+
+    // Send message over WebSocket
+    if (messageTimer) {
         snprintf(
             message, sizeof(message), "x = %f, y = %f, theta = %f, vl = %f, vr = %f", pose.x, pose.y, pose.theta, leftVelocity, rightVelocity
         );
