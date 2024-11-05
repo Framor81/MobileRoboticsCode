@@ -97,7 +97,7 @@ def main():
     plt.subplots_adjust(hspace=1, top=0.9, bottom=0.2, left=0.1, right=0.9)
 
     for j in range(3):
-        SD = [0, 1, 4]
+        SD = [0.5, 1, 4]
         args = [(0, 0), (round(random.normalvariate(sigma=SD[j]), 2), 0), (0, round(random.normalvariate(sigma=SD[j]), 2)), (round(random.normalvariate(sigma=SD[j]), 2), round(random.normalvariate(sigma=SD[j]), 2))]
         print(args)
 
