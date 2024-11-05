@@ -8,12 +8,12 @@ import matplotlib.pyplot as plt
 TRACK_WIDTH = 0.16
 TIME_END = 10 
 
-K_ORIENTATION = 0
-K_POSITION = 0
+K_ORIENTATION = 3
+K_POSITION = 3
 
-GOAL = (0, 0, 0)
-MAX_LINEAR_VELOCITY = 0
-MAX_ANGULAR_VELOCITY = 0
+GOAL = (3, 3, 0)
+MAX_LINEAR_VELOCITY = 1
+MAX_ANGULAR_VELOCITY = 1
 
 # pose class
 class Pose:
@@ -89,52 +89,50 @@ def plot_graph(position, subplot):
     subplot.plot(GOAL[0], GOAL[1], marker="x", markersize=20)
 
 
-    subplot.set_title("Goal: "  + str(GOAL))
-    subplot.set_xlabel("Max Linear Velocity: " + str(MAX_LINEAR_VELOCITY) + "\n"
-                       + "Max Angular Velocity: " + str(MAX_ANGULAR_VELOCITY) + "\n"
-                       + "K Position: " + str(K_POSITION) + "\n" 
-                       + "K Orientation: " + str(K_ORIENTATION), ha = "center", fontsize = 8)
-
+    # subplot.set_title("Goal: "  + str(GOAL))
+    # subplot.set_xlabel("Max Linear Velocity: " + str(MAX_LINEAR_VELOCITY) + "\n"
+    #                    + "Max Angular Velocity: " + str(MAX_ANGULAR_VELOCITY) + "\n"
+    #                    + "K Position: " + str(K_POSITION) + "\n" 
+    #                    + "K Orientation: " + str(K_ORIENTATION), ha = "center", fontsize = 8)
+    # subplot.set_xlabel("sd = " + str(SD))
 
 def main():
-    global K_ORIENTATION, K_POSITION, GOAL, MAX_LINEAR_VELOCITY, MAX_ANGULAR_VELOCITY  # Declare global variables
-
-    fig, axs = plt.subplots(2, 5, figsize = (15, 5))
+    global SD
+    fig, axs = plt.subplots(3, 4, figsize = (15, 5))
     fig.tight_layout(h_pad = 5)
     axs = axs.flatten()
     plt.subplots_adjust(hspace=1, top=0.9, bottom=0.2, left=0.1, right=0.9)
-    
-    for i in range(10):
-        t = 0
-        dt = 0.5
-        v_left = 0.2
-        v_right = 0.25
-        pose = Pose()
-        position = PositionControl()
-        
-        while t < TIME_END:
-            print(pose)
-            pose = ForwardKinematics.forward_kinematics(pose, v_left, v_right, dt)
-            v_left, v_right = position.position_control(pose, GOAL)
-            v_left += random.normalvariate()
-            v_right += random.normalvariate()
 
-            t += dt
+    for j in range(3):
+        SD = [0.5, 1, 1.5]
+        args = [(0, 0), (round(random.normalvariate(sigma=SD[j]), 2), 0), (0, round(random.normalvariate(sigma=SD[j]), 2)), (round(random.normalvariate(sigma=SD[j]), 2), round(random.normalvariate(sigma=SD[j]), 2))]
+        print(args)
 
-        plot_graph(position, axs[i])
-        
-        K_ORIENTATION = round(random.uniform(0, 4), 2)
-        K_POSITION = round(random.uniform(0, 4), 2)
+        for i in range(4):
+            t = 0
+            dt = 0.5
+            v_left = 0.2
+            v_right = 0.25
+            pose = Pose()
+            position = PositionControl()
+            
+            while t < TIME_END:
+                # print(pose)
+                pose = ForwardKinematics.forward_kinematics(pose, v_left, v_right, dt)
+                v_left, v_right = position.position_control(pose, GOAL)
+                v_left += args[i][0]
+                v_right += args[i][1]
 
-        GOAL = (round(random.uniform(-3, 3), 2), 
-                round(random.uniform(-3, 3),2), 
-                round(random.uniform(-2 * math.pi, 2 * math.pi), 2))
-        MAX_LINEAR_VELOCITY = round(random.uniform(0, 2), 2)
-        MAX_ANGULAR_VELOCITY = round(random.uniform(0, 2), 2)
+                t += dt
 
-        pose.reset()
+            plot_graph(position, axs[4 * j + i])
+            axs[4 * j + i].set_xlabel("sd = " + str(SD) + "\n"
+                                      + "left noise = " + str(args[i][0]) + "\n"
+                                      + "right noise = " + str(args[i][1]) + "\n")
 
-    plt.savefig('./motioncontrol.png')
+            pose.reset()
+
+    plt.savefig('./noisymotioncontrol.png')
     plt.show()
 
 
