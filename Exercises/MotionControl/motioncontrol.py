@@ -105,26 +105,19 @@ def main():
     plt.subplots_adjust(hspace=1, top=0.9, bottom=0.2, left=0.1, right=0.9)
     
     for i in range(10):
-        initial_t = time.time()
-        t = time.time()
+        t = 0
         dt = 0.5
         v_left = 0.2
         v_right = 0.25
         pose = Pose()
         position = PositionControl()
         
-        while t < initial_t + TIME_END:
+        while t < TIME_END:
             print(pose)
             pose = ForwardKinematics.forward_kinematics(pose, v_left, v_right, dt)
             v_left, v_right = position.position_control(pose, GOAL)
-            t = time.time()
 
-            interval = t + dt
-            while t < interval:
-                time.sleep(0.05)
-                t = time.time()
-
-            t = t + dt
+            t += dt
 
         plot_graph(position, axs[i])
         
