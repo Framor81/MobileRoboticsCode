@@ -89,13 +89,6 @@ def plot_graph(position, subplot):
     subplot.plot(GOAL[0], GOAL[1], marker="x", markersize=20)
 
 
-    # subplot.set_title("Goal: "  + str(GOAL))
-    # subplot.set_xlabel("Max Linear Velocity: " + str(MAX_LINEAR_VELOCITY) + "\n"
-    #                    + "Max Angular Velocity: " + str(MAX_ANGULAR_VELOCITY) + "\n"
-    #                    + "K Position: " + str(K_POSITION) + "\n" 
-    #                    + "K Orientation: " + str(K_ORIENTATION), ha = "center", fontsize = 8)
-    # subplot.set_xlabel("sd = " + str(SD))
-
 def main():
     global SD
     fig, axs = plt.subplots(3, 4, figsize = (15, 5))
