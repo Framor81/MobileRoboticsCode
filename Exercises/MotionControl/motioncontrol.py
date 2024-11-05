@@ -58,10 +58,10 @@ class PositionControl:
         self.ys.append(pose.get_pose()[1])
         self.thetas.append(pose.get_pose()[2])
 
-        d = math.dist(pose.get_pose(), goal)
+        d = math.dist(pose.get_pose()[:2], goal[:2])
         # if d is small then return 0, 0
         # what do we consider small
-        if (d < 1):
+        if (d < 0.25):
             return 0, 0
 
         v = K_POSITION * d  
