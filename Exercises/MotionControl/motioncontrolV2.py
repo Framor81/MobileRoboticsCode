@@ -128,7 +128,7 @@ def main():
             plot_graph(position, axs[4 * j + i])
             axs[4 * j + i].set_xlabel("sd = " + str(SD) + "\n"
                                       + "left noise = " + str(args[i][0]) + "\n"
-                                      + "right noise = " + str(args[i][1]) + "\n")
+                                      + "right noise = " + str(args[i][1]) + "\n", fontsize = 8)
 
             pose.reset()
 
