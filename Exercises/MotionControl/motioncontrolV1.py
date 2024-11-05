@@ -116,8 +116,6 @@ def main():
             print(pose)
             pose = ForwardKinematics.forward_kinematics(pose, v_left, v_right, dt)
             v_left, v_right = position.position_control(pose, GOAL)
-            v_left += random.normalvariate()
-            v_right += random.normalvariate()
 
             t += dt
 
