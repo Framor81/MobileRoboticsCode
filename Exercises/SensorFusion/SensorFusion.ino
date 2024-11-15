@@ -4,7 +4,8 @@
 #include "../../include/motorcontrol.h"
 #include "../display/display.h"
 #include "../../include/forwardkinematics.h"
-#include "positioncontrol.h"
+#include "../PositionControl/positioncontrol.h"
+#include "SensorFusion.h"
 
 #include <math.h>
 
@@ -115,7 +116,7 @@ void loop() {
 
     // Update position control
     Pose pose = forwardKinematics.getPose();
-    float theta = compass.loopStep();
+    float theta = compass.loopStep(pose.theta);
     pose.set(pose.x, pose.y, theta);
     bool shouldUpdateVelocities = positionControl.loopStep(pose, leftVelocity, rightVelocity);
 
@@ -126,7 +127,7 @@ void loop() {
     // Send message over WebSocket
     if (messageTimer) {
         snprintf(
-            message, sizeof(message), "x = %f, y = %f, theta = %f, vl = %f, vr = %f", pose.x, pose.y, pose.theta, leftVelocity, rightVelocity
+            message, sizeof(message), "x=%f y=%f theta=%f vl=%f vr=%f", pose.x, pose.y, pose.theta, leftVelocity, rightVelocity
         );
         wsCommunicator.sendText(message, strlen(message));
     }

@@ -2,6 +2,7 @@
 #define SENSOR_FUSION_H
 
 #include <QMC5883LCompass.h>
+#include <math.h>
 
 
 class SensorFusion {
@@ -18,12 +19,15 @@ class SensorFusion {
     compass.init();
     compass.setCalibrationOffsets(-155.00, -179.00, -1178.00);
     compass.setCalibrationScales(1.32, 1.12, 0.74);
+
   }
 
   float loopStep(float thetaK) {
-    float YK = ema * compass.read() + (1 - ema) * prevYK;
+    compass.read();
 
-    return alpha * thetaK + (1 - alpha) * YK;
+    float YK = ema * compass.getAzimuth() + (1 - ema) * prevYK;
+
+    return compassWeight * thetaK + (1 - compassWeight) * YK;
   }
 };
 
