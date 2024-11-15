@@ -28,6 +28,7 @@ IntervalTimer messageTimer(500);
 
 // Display Configuration
 Display display;
+SensorFusion compass(0.7, 0.6);
 
 // Control characteristics
 
@@ -46,7 +47,6 @@ MotorControl motorControl(
 // Kinematics configuration
 
 const unsigned long FORWARD_KINEMATICS_INTERVAL = 250;
-
 ForwardKinematics forwardKinematics(TRACK_WIDTH, FORWARD_KINEMATICS_INTERVAL);
 
 // Position control configuration
@@ -75,7 +75,7 @@ void setup() {
     char port[7];
     snprintf(port, 6, ":%d", wsCommunicator.getPort());
 
-    display.drawString(0, 0, "Position Control");
+    display.drawString(0, 0, "Sensor Fusion");
     display.drawString(0, 1, wsCommunicator.getIpAddress().c_str());
     display.drawString(0, 2, port);
 
@@ -84,6 +84,7 @@ void setup() {
     forwardKinematics.setup();
 
     positionControl.setup();
+    compass.setup();
 }
 
 // Reset
@@ -114,6 +115,8 @@ void loop() {
 
     // Update position control
     Pose pose = forwardKinematics.getPose();
+    float theta = compass.loopStep();
+    pose.set(pose.x, pose.y, theta);
     bool shouldUpdateVelocities = positionControl.loopStep(pose, leftVelocity, rightVelocity);
 
     if (shouldUpdateVelocities){
@@ -123,7 +126,7 @@ void loop() {
     // Send message over WebSocket
     if (messageTimer) {
         snprintf(
-            message, sizeof(message), "x=%f y=%f theta=%f vl=%f vr=%f", pose.x, pose.y, pose.theta, leftVelocity, rightVelocity
+            message, sizeof(message), "x = %f, y = %f, theta = %f, vl = %f, vr = %f", pose.x, pose.y, pose.theta, leftVelocity, rightVelocity
         );
         wsCommunicator.sendText(message, strlen(message));
     }
