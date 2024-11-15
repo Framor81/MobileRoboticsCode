@@ -1,8 +1,9 @@
 import math
-import time
-import matplotlib
 import random
-import matplotlib.pyplot as plt 
+import time
+
+import matplotlib
+import matplotlib.pyplot as plt
 
 # Global Variables
 TRACK_WIDTH = 0.16
@@ -95,9 +96,10 @@ def main():
     fig.tight_layout(h_pad = 5)
     axs = axs.flatten()
     plt.subplots_adjust(hspace=1, top=0.9, bottom=0.2, left=0.1, right=0.9)
+    SD = [0.5, .5, .5]
+
 
     for j in range(3):
-        SD = [0.5, 1, 4]
         args = [(0, 0), (round(random.normalvariate(sigma=SD[j]), 2), 0), (0, round(random.normalvariate(sigma=SD[j]), 2)), (round(random.normalvariate(sigma=SD[j]), 2), round(random.normalvariate(sigma=SD[j]), 2))]
         print(args)
 

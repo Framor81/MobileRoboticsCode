@@ -123,7 +123,7 @@ void loop() {
     // Send message over WebSocket
     if (messageTimer) {
         snprintf(
-            message, sizeof(message), "x = %f, y = %f, theta = %f, vl = %f, vr = %f", pose.x, pose.y, pose.theta, leftVelocity, rightVelocity
+            message, sizeof(message), "x=%f y=%f theta=%f vl=%f vr=%f", pose.x, pose.y, pose.theta, leftVelocity, rightVelocity
         );
         wsCommunicator.sendText(message, strlen(message));
     }
