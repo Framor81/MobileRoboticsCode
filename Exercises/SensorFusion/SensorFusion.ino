@@ -29,7 +29,7 @@ IntervalTimer messageTimer(500);
 
 // Display Configuration
 Display display;
-SensorFusion compass(0.7, 0.6);
+SensorFusion compass(0.85, 0.2);
 
 // Control characteristics
 
@@ -52,7 +52,7 @@ ForwardKinematics forwardKinematics(TRACK_WIDTH, FORWARD_KINEMATICS_INTERVAL);
 
 // Position control configuration
 const float GOAL_X = 0;
-const float GOAL_Y = 2;
+const float GOAL_Y = 1;
 const float GOAL_THRESHOLD = 0.1;
 
 const float MAX_ANGULAR_VELOCITY = 1.0;
