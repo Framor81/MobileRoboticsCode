@@ -1,5 +1,6 @@
 from edmunds import edmunds105
 
+
 def is_valid_coordinate(coord, graph):
     return coord[0] >= 0 and coord[0] < len(graph[0]) and coord[1] >= 0 and coord[1] < len(graph)
 
@@ -34,16 +35,15 @@ edmunds105.reverse()
 
 def get_path(paths, start, goal):
     if paths == 0: 
-        return 0
+        return -1
 
     path = []
     curr = goal
     
     while curr != start: 
-        print(curr)
         path.append(curr)
         curr = paths[curr[1]][curr[0]]    
         
     return path[::-1]
     
-print(get_path(bfs(edmunds105, [0,0], [0, 26]), [0,0], [0,26]))
+print(get_path(bfs(edmunds105, [26,0], [19, 12]), [26,0], [19,12]))

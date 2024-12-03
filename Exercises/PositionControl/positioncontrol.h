@@ -21,6 +21,8 @@ class PositionControl {
     IntervalTimer updateTimer;
 
     public: 
+    bool atGoal;
+    
     PositionControl(
         float goalX, float goalY, float goalThreshold, float maxLinearVelocity, 
         float maxAngularVelocity, float K_position, float trackWidth, float K_orientation, unsigned long interval
@@ -47,6 +49,7 @@ class PositionControl {
         if (d < goalThreshold){
             leftVelocity = 0;
             rightVelocity = 0;  
+            atGoal = true;
             return true;
         }
 
@@ -61,6 +64,16 @@ class PositionControl {
         rightVelocity = v + thetaDot * trackWidth / 2.0;
 
         return true;
+    }
+
+    void updateGoal(float newX, float newY) {
+        if (goalX == newX && goalY == newY){
+            return;
+        } 
+        goalX = newX;
+        goalY = newY; 
+        atGoal = false;
+        
     }
 
 };
