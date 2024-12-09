@@ -25,15 +25,6 @@ unsigned long startTime = 0;
 unsigned long timeRan = 0;
 IntervalTimer timer(100);
 
-// Setup:
-//     Start serial
-//     Start the wsCommunicator
-//     Start the motorControl
-//     Set the motor target velocity
-//     Start the display
-//     Display the IP address
-//     Start the kinematics
-
 void setup() {
     // start serial and wsCommunicator
     Serial.begin(115200);

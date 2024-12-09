@@ -56,11 +56,14 @@ class PositionControl {
         float angleToGoal = atan2(goalY - pose.y, goalX - pose.x);
 
         float angleError = angleToGoal - pose.theta;
+
+        //normalization
+        angleError = atan2(sin(angleError), cos(angleError));
         
         float v = min(K_position * d, maxLinearVelocity);
         float thetaDot = min(K_orientation * angleError, maxAngularVelocity);
 
-        leftVelocity = v - thetaDot / trackWidth / 2.0;
+        leftVelocity = v - thetaDot * trackWidth / 2.0;
         rightVelocity = v + thetaDot * trackWidth / 2.0;
 
         return true;
